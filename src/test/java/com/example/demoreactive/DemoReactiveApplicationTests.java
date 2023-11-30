@@ -22,9 +22,4 @@ class DemoReactiveApplicationTests {
 	void contextLoads() {
 	}
 
-	@Test
-	public void main(){
-		DemoReactiveApplication.main(new String[]{});
-	}
-
 }

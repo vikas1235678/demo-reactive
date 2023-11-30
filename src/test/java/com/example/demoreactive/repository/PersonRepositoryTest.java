@@ -48,7 +48,9 @@ class PersonRepositoryTest {
     }
 
     @Test
-    void shouldCheckIfPersonPresent(){Mono<PersonEntity> personEntityMono = personRepository.findById(22);
+    void shouldCheckIfPersonPresent(){
+
+        Mono<PersonEntity> personEntityMono = personRepository.findById(22);
         Predicate<PersonEntity> personEntityPredicate = new Predicate<PersonEntity>() {
             @Override
             public boolean test(PersonEntity person) {

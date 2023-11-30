@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  *      5. if any expectations failed, an AssertionError will be thrown indicating the failures.
  *
  */
-public class BasicTest {
+class BasicTest {
     Calculator c = new Calculator();
 
     Flux<String> names = Flux.just("n1","n2","n3","n4","n5","n6","n7","n8","n9");

@@ -16,7 +16,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 @WebFluxTest(PersonController.class)
-public class PersonControllerTest {
+class PersonControllerTest {
     private final Integer TestPersonId = 1;
     @Autowired
     private WebTestClient webTestClient;
@@ -24,7 +24,7 @@ public class PersonControllerTest {
     private PersonService personService;
 
     @Test
-    public void shouldGetPerson(){
+    void shouldGetPerson(){
 
         PersonDto personDto = new PersonDto();
 
