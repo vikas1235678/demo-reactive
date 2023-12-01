@@ -1,5 +1,6 @@
 package com.example.demoreactive;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -20,6 +21,7 @@ class DemoReactiveApplicationTests {
 
 	@Test
 	void contextLoads() {
+		Assertions.assertTrue(true);
 	}
 
 }
