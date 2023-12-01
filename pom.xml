@@ -141,5 +141,23 @@
 				</plugins>
 			</build>
 		</profile>
+		<profile>
+			<id>sonar</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<!-- Optional URL to server. Default value is http://localhost:9000 -->
+				<sonar.host.url>
+					https://sonarcloud.io
+				</sonar.host.url>
+				<sonar.organization>
+					vikas1235678
+				</sonar.organization>
+				<sonar.projectKey>
+					vikas1235678_demo-reactive
+				</sonar.projectKey>
+			</properties>
+		</profile>
 	</profiles>
 </project>
