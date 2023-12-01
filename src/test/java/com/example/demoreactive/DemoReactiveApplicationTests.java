@@ -22,6 +22,7 @@ class DemoReactiveApplicationTests {
 	@Test
 	void contextLoads() {
 		Assertions.assertTrue(true);
+		Assertions.assertFalse(false);
 	}
 
 }
