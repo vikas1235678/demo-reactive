@@ -10,6 +10,7 @@ import org.mockito.MockitoAnnotations;
 import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.r2dbc.DataR2dbcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -29,56 +30,21 @@ import static org.mockito.Mockito.when;
 @DataR2dbcTest
 @ExtendWith(SpringExtension.class)
 class PersonRepositoryTest {
-
     @BeforeEach
     void setup(){
         MockitoAnnotations.openMocks(this);
     }
-
-    @Mock
+    @MockBean
     private PersonRepository personRepository;
-
     @Test
-    void shouldSaveSinglePerson(){
-
-        Assertions.assertTrue(true);
-//        PersonEntity personEntity = new PersonEntity();
-//        personEntity.setName("Joel");
-//        personEntity.setAge(16);
-//
-//        Mono<PersonEntity> personEntityMono = personRepository.save(personEntity);
-//
-//        Predicate<PersonEntity> personEntityPredicate = new Predicate<PersonEntity>() {
-//            @Override
-//            public boolean test(PersonEntity person) {
-//                return person!=null;
-//            }
-//        };
-//
-//        StepVerifier
-//                .create(personEntityMono)
-//                .expectNextMatches(personEntityPredicate)
-//                .verifyComplete();
-    }
-
-    @Test
-    void shouldCheckIfPersonIdPresent(){
-        Assertions.assertTrue(true);
-
-//        when(personRepository.findById(22)).thenCallRealMethod();
-//
-//        Mono<PersonEntity> personEntityMono = personRepository.findById(22);
-//
-//        Predicate<PersonEntity> personEntityPredicate = new Predicate<PersonEntity>() {
-//            @Override
-//            public boolean test(PersonEntity person) {
-//                return person != null;
-//            }
-//        };
-//
-//        StepVerifier
-//                .create(personEntityMono)
-//                .expectNextMatches(personEntityPredicate)
-//                .verifyComplete();
+    void testSaveAPerson(){
+        int testPersonId=10;
+        PersonEntity personEntity = new PersonEntity();
+        personEntity.setName("Joel");
+        personEntity.setAge(16);
+        personEntity.setId(testPersonId);
+        Mono<PersonEntity> personEntityMono = Mono.just(personEntity);
+        when(personRepository.save(personEntity)).thenReturn(personEntityMono);
+        Assertions.assertEquals(personEntityMono, personRepository.save(personEntity));
     }
 }
