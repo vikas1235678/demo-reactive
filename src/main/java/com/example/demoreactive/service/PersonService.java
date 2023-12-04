@@ -1,18 +1,12 @@
 package com.example.demoreactive.service;
 
 import com.example.demoreactive.dto.PersonDto;
-import com.example.demoreactive.entity.PersonEntity;
 import com.example.demoreactive.repository.PersonRepository;
 import com.example.demoreactive.util.EntityDtoUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.util.Optional;
-
-
 @Service
 public class PersonService {
     @Autowired

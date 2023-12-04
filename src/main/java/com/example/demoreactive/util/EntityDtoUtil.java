@@ -3,7 +3,6 @@ package com.example.demoreactive.util;
 import com.example.demoreactive.dto.PersonDto;
 import com.example.demoreactive.entity.PersonEntity;
 import org.springframework.beans.BeanUtils;
-import org.springframework.http.ResponseEntity;
 
 public class EntityDtoUtil {
     public static PersonDto toDto(PersonEntity personEntity) {
