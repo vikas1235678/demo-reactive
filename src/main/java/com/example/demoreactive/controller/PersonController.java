@@ -12,9 +12,11 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping("/persons")
 public class PersonController {
-
-    @Autowired
     PersonService personService;
+    @Autowired
+    PersonController(PersonService personService){
+        this.personService=personService;
+    }
 
     /**
      * all person present in person database
