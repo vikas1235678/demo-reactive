@@ -17,16 +17,12 @@ import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 @WebFluxTest(PersonController.class)
 class PersonControllerTest {
-    private final Integer testPersonId = 1;
-
     @BeforeEach
     void setup() {
         MockitoAnnotations.openMocks(this);
     }
-
     @MockBean
     private PersonService personService;
-
     @Test
     void testFindByIdReturnAPerson() {
         int testPersonId = 14;
