@@ -76,12 +76,6 @@ class PersonControllerTest {
         Mono<PersonDto> personDtoMono = Mono.just(personDto);
         when(personController.createPerson(any())).thenReturn(personDtoMono);
         Assertions.assertNotNull(personController.createPerson(personDtoMono));
-        Publisher<PersonDto> personDtoPublisher = new Publisher<PersonDto>() {
-            @Override
-            public void subscribe(Subscriber<? super PersonDto> subscriber) {
-                subscriber.onNext(personDto);
-            }
-        };
         webTestClient.post()
                 .uri("/persons/person")
                 .body(BodyInserters.fromObject(personDto))
