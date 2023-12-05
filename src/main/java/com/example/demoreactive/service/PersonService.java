@@ -39,7 +39,7 @@ public class PersonService {
                 .map(EntityDtoUtil::toDto);
     }
 
-    public Mono<Void> deletPerson(int id) {
+    public Mono<Void> deletePerson(int id) {
         return this.personRepository.deleteById(id);
     }
 }

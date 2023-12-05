@@ -1,16 +1,16 @@
 package com.example.demoreactive.controller;
 
 import com.example.demoreactive.dto.PersonDto;
+import com.example.demoreactive.service.PersonService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
 import reactor.core.publisher.Flux;
@@ -20,7 +20,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(SpringExtension.class)
+@ExtendWith(MockitoExtension.class)
 @WebFluxTest(PersonController.class)
 class PersonControllerTest {
     @BeforeEach
@@ -28,7 +28,7 @@ class PersonControllerTest {
         MockitoAnnotations.openMocks(this);
     }
     @MockBean
-    private PersonController personController;
+    PersonService personService;
 
     @Autowired
     WebTestClient webTestClient;
@@ -38,8 +38,8 @@ class PersonControllerTest {
         Flux<PersonDto> personDtoFlux = Flux.just(createPersonDto(14, "Cory", 22),
                 createPersonDto(15, "Smith", 26),
                 createPersonDto(16, "Bob", 25));
-        when(personController.all()).thenReturn(personDtoFlux);
-        Assertions.assertNotNull(personController.all());
+        when(personService.all()).thenReturn(personDtoFlux);
+        Assertions.assertNotNull(personService.all());
         webTestClient.get()
                 .uri("/persons/all")
                 .exchange()
@@ -56,11 +56,8 @@ class PersonControllerTest {
         int testPersonId = 14;
         PersonDto personDto = new PersonDto(testPersonId, "Cory", 20);
         Mono<PersonDto> testMonoResponse = Mono.just(personDto);
-        Mono<ResponseEntity<PersonDto>> testMonoResEntityResponse =
-                testMonoResponse.map(ResponseEntity::ok)
-                        .defaultIfEmpty(ResponseEntity.notFound().build());
-        when(personController.personById(anyInt())).thenReturn(testMonoResEntityResponse);
-        assertNotNull(personController.personById(testPersonId));
+        when(personService.getPersonById(anyInt())).thenReturn(testMonoResponse);
+        assertNotNull(personService.getPersonById(testPersonId));
 
         webTestClient.get()
                 .uri("/persons/14")
@@ -72,8 +69,8 @@ class PersonControllerTest {
     void createPerson(){
         PersonDto personDto = new PersonDto(25, "Adam", 26);
         Mono<PersonDto> personDtoMono = Mono.just(personDto);
-        when(personController.createPerson(any())).thenReturn(personDtoMono);
-        Assertions.assertNotNull(personController.createPerson(personDtoMono));
+        when(personService.createPerson(any())).thenReturn(personDtoMono);
+        Assertions.assertNotNull(personService.createPerson(personDtoMono));
         webTestClient.post()
                 .uri("/persons/person")
                 .body(BodyInserters.fromObject(personDto))
@@ -87,11 +84,8 @@ class PersonControllerTest {
         int testPersonId = 14;
         PersonDto personDto = new PersonDto(testPersonId, "Alice", 20);
         Mono<PersonDto> testMonoResponse = Mono.just(personDto);
-        Mono<ResponseEntity<PersonDto>> testMonoResEntityResponse =
-                testMonoResponse.map(ResponseEntity::ok)
-                        .defaultIfEmpty(ResponseEntity.notFound().build());
-        when(personController.updatePerson(anyInt(), any())).thenReturn(testMonoResEntityResponse);
-        assertNotNull(personController.updatePerson(testPersonId, testMonoResponse));
+        when(personService.updatePerson(anyInt(), any())).thenReturn(testMonoResponse);
+        assertNotNull(personService.updatePerson(testPersonId, testMonoResponse));
 
         webTestClient.put()
                 .uri("/persons/14")
@@ -103,7 +97,7 @@ class PersonControllerTest {
     @Test
     void deleteUser(){
         int testPersonId = 14;
-        Mono<Void> deleteUserResponse = personController.deleteUser(testPersonId);
+        Mono<Void> deleteUserResponse = personService.deletePerson(testPersonId);
         Assertions.assertNull(deleteUserResponse);
 
         webTestClient.delete()

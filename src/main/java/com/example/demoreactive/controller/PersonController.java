@@ -69,6 +69,6 @@ public class PersonController {
      */
     @DeleteMapping("/{id}")
     public Mono<Void> deleteUser(@PathVariable int id){
-        return this.personService.deletPerson(id);
+        return this.personService.deletePerson(id);
     }
 }
