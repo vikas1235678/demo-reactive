@@ -29,7 +29,7 @@ public class PersonService {
                 .map(EntityDtoUtil::toDto);
     }
 
-    public Mono<PersonDto> updateUser(int id, Mono<PersonDto> personDtoMono) {
+    public Mono<PersonDto> updatePerson(int id, Mono<PersonDto> personDtoMono) {
         return this.personRepository
                 .findById(id)
                 .flatMap(u -> personDtoMono
@@ -39,7 +39,7 @@ public class PersonService {
                 .map(EntityDtoUtil::toDto);
     }
 
-    public Mono<Void> deleteUser(int id) {
+    public Mono<Void> deletPerson(int id) {
         return this.personRepository.deleteById(id);
     }
 }

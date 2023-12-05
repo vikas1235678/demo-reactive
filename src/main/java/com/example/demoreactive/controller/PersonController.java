@@ -57,7 +57,7 @@ public class PersonController {
      */
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<PersonDto>> updatePerson(@PathVariable int id, @RequestBody Mono<PersonDto> personDtoMono){
-        return this.personService.updateUser(id, personDtoMono)
+        return this.personService.updatePerson(id, personDtoMono)
                 .map(ResponseEntity::ok)
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
@@ -69,6 +69,6 @@ public class PersonController {
      */
     @DeleteMapping("/{id}")
     public Mono<Void> deleteUser(@PathVariable int id){
-        return this.personService.deleteUser(id);
+        return this.personService.deletPerson(id);
     }
 }
