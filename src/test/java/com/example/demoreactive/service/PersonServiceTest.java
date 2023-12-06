@@ -8,9 +8,11 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.autoconfigure.data.r2dbc.DataR2dbcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -20,14 +22,16 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
+@DataR2dbcTest
 @ExtendWith(MockitoExtension.class)
+@ExtendWith(SpringExtension.class)
 class PersonServiceTest {
     @BeforeEach
     void setup(){
         MockitoAnnotations.openMocks(this);
     }
-
-    PersonRepository personRepository = Mockito.mock(PersonRepository.class);
+    @MockBean
+    PersonRepository personRepository;
 
     @Test
     void all(){
