@@ -1,8 +1,5 @@
 package com.example.demoreactive.entity;
 
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.data.annotation.Id;
@@ -11,11 +8,10 @@ import org.springframework.data.domain.Persistable;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
-@Data
+
 @Table("person2")
 @ToString
 @NoArgsConstructor
-@AllArgsConstructor
 public class PersonEntity implements Persistable<Integer> {
     @Id
     private Integer id;
@@ -42,5 +38,22 @@ public class PersonEntity implements Persistable<Integer> {
     public PersonEntity setAsNew(){
         this.newPerson = true;
         return this;
+    }
+
+    @Override
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
     }
 }
