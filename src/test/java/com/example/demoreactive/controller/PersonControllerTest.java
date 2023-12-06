@@ -45,7 +45,6 @@ class PersonControllerTest {
                 .exchange()
                 .expectStatus()
                 .isOk();
-
     }
 
     private PersonDto createPersonDto(int testPersonId, String testPersonName, int testPersonAge){

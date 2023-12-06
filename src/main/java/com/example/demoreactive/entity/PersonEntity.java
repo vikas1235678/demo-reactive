@@ -27,6 +27,12 @@ public class PersonEntity implements Persistable<Integer> {
     @Transient
     private boolean newPerson;
 
+    public PersonEntity(int testPersonId, String testPersonName, int testPersonAge) {
+        this.setId(testPersonId);
+        this.setName(testPersonName);
+        this.setAge(testPersonAge);
+    }
+
     @Override
     @Transient
     public boolean isNew() {

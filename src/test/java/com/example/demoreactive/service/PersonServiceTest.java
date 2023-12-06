@@ -1,68 +1,89 @@
 package com.example.demoreactive.service;
 
-import com.example.demoreactive.dto.PersonDto;
+import com.example.demoreactive.entity.PersonEntity;
+import com.example.demoreactive.repository.PersonRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(SpringExtension.class)
+@ExtendWith(MockitoExtension.class)
 class PersonServiceTest {
     @BeforeEach
     void setup(){
         MockitoAnnotations.openMocks(this);
     }
-    @MockBean
-    PersonService personService;
+    PersonRepository personRepository = Mockito.mock(PersonRepository.class);
+
     @Test
     void all(){
-        Flux<PersonDto> personDtoFlux = Flux.just(createPersonDto(14, "Cory", 22),
-                createPersonDto(15, "Smith", 26),
-                createPersonDto(16, "Bob", 25));
-        when(personService.all()).thenReturn(personDtoFlux);
-        Assertions.assertNotNull(personService.all());
+        PersonEntity personEntity1 = createPersonEntity(14, "Cory", 22);
+        PersonEntity personEntity2 = createPersonEntity(15, "Smith", 26);
+        PersonEntity personEntity3 = createPersonEntity(16, "Bob", 25);
+        Flux<PersonEntity> personEntityFlux = Flux.just(personEntity1, personEntity2, personEntity3);
+        when(personRepository.findAll()).thenReturn(personEntityFlux);
+        Assertions.assertNotNull(personRepository.findAll());
+
+        StepVerifier.create(personRepository.findAll())
+                .expectNext(personEntity1)
+                .expectNext(personEntity2)
+                .expectNext(personEntity3)
+                .verifyComplete();
     }
 
-    private PersonDto createPersonDto(int testPersonId, String testPersonName, int testPersonAge){
-        return new PersonDto(testPersonId, testPersonName, testPersonAge);
+    private PersonEntity createPersonEntity(int testPersonId, String testPersonName, int testPersonAge){
+        return new PersonEntity(testPersonId, testPersonName, testPersonAge);
     }
+
     @Test
     void personById() {
         int testPersonId = 14;
-        PersonDto personDto = new PersonDto(testPersonId, "Cory", 20);
-        Mono<PersonDto> testMonoResponse = Mono.just(personDto);
-        when(personService.getPersonById(anyInt())).thenReturn(testMonoResponse);
-        assertNotNull(personService.getPersonById(testPersonId));
+        PersonEntity personEntity = new PersonEntity(testPersonId, "Cory", 20);
+        Mono<PersonEntity> testMonoResponse = Mono.just(personEntity);
+        when(personRepository.findById(anyInt())).thenReturn(testMonoResponse);
+        assertNotNull(personRepository.findById(testPersonId));
+
+        StepVerifier.create(personRepository.findById(testPersonId))
+                .expectNext(personEntity)
+                .verifyComplete();
     }
     @Test
     void createPerson(){
-        PersonDto personDto = new PersonDto(25, "Adam", 26);
-        Mono<PersonDto> personDtoMono = Mono.just(personDto);
-        when(personService.createPerson(any())).thenReturn(personDtoMono);
-        Assertions.assertNotNull(personService.createPerson(personDtoMono));
+        PersonEntity personEntity = new PersonEntity(25, "Adam", 26);
+        Mono<PersonEntity> personEntityMono = Mono.just(personEntity);
+        when(personRepository.save(any())).thenReturn(personEntityMono);
+
+        StepVerifier.create(personRepository.save(personEntity))
+                .expectNext(personEntity)
+                .verifyComplete();
     }
 
     @Test
     void updatePerson(){
         int testPersonId = 14;
-        PersonDto personDto = new PersonDto(testPersonId, "Alice", 20);
-        Mono<PersonDto> testMonoResponse = Mono.just(personDto);
-        when(personService.updatePerson(anyInt(), any())).thenReturn(testMonoResponse);
-        assertNotNull(personService.updatePerson(testPersonId, testMonoResponse));
+        PersonEntity personEntity = new PersonEntity(testPersonId, "Alice", 20);
+        Mono<PersonEntity> testMonoResponse = Mono.just(personEntity);
+        when(personRepository.save(any())).thenReturn(testMonoResponse);
+
+        StepVerifier.create(personRepository.save(personEntity))
+                .expectNext(personEntity)
+                .verifyComplete();
     }
     @Test
     void deleteUser(){
         int testPersonId = 14;
-        Mono<Void> deleteUserResponse = personService.deletPerson(testPersonId);
-        Assertions.assertNull(deleteUserResponse);
+        StepVerifier.create(personRepository.deleteById(testPersonId))
+                .expectComplete();
     }
 }
