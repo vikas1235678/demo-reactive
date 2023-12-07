@@ -1,6 +1,6 @@
 package com.example.demoreactive.controller;
 
-import com.example.demoreactive.dto.PersonDto;
+import com.example.demoreactive.entity.PersonEntity;
 import com.example.demoreactive.service.PersonService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,9 +35,9 @@ class PersonControllerTest {
 
     @Test
     void all(){
-        Flux<PersonDto> personDtoFlux = Flux.just(createPersonDto(14, "Cory", 22),
-                createPersonDto(15, "Smith", 26),
-                createPersonDto(16, "Bob", 25));
+        Flux<PersonEntity> personDtoFlux = Flux.just(createPersonEntity(14, "Cory", 22),
+                createPersonEntity(15, "Smith", 26),
+                createPersonEntity(16, "Bob", 25));
         when(personService.all()).thenReturn(personDtoFlux);
         Assertions.assertNotNull(personService.all());
         webTestClient.get()
@@ -47,14 +47,14 @@ class PersonControllerTest {
                 .isOk();
     }
 
-    private PersonDto createPersonDto(int testPersonId, String testPersonName, int testPersonAge){
-        return new PersonDto(testPersonId, testPersonName, testPersonAge);
+    private PersonEntity createPersonEntity(int testPersonId, String testPersonName, int testPersonAge){
+        return new PersonEntity(testPersonId, testPersonName, testPersonAge);
     }
     @Test
     void personById() {
         int testPersonId = 14;
-        PersonDto personDto = new PersonDto(testPersonId, "Cory", 20);
-        Mono<PersonDto> testMonoResponse = Mono.just(personDto);
+        PersonEntity personEntity = new PersonEntity(testPersonId, "Cory", 20);
+        Mono<PersonEntity> testMonoResponse = Mono.just(personEntity);
         when(personService.getPersonById(anyInt())).thenReturn(testMonoResponse);
         assertNotNull(personService.getPersonById(testPersonId));
 
@@ -66,13 +66,13 @@ class PersonControllerTest {
     }
     @Test
     void createPerson(){
-        PersonDto personDto = new PersonDto(25, "Adam", 26);
-        Mono<PersonDto> personDtoMono = Mono.just(personDto);
-        when(personService.createPerson(any())).thenReturn(personDtoMono);
-        Assertions.assertNotNull(personService.createPerson(personDtoMono));
+        PersonEntity personEntity = new PersonEntity(25, "Adam", 26);
+        Mono<PersonEntity> personEntityMono = Mono.just(personEntity);
+        when(personService.createPerson(any())).thenReturn(personEntityMono);
+        Assertions.assertNotNull(personService.createPerson(personEntity));
         webTestClient.post()
                 .uri("/persons/person")
-                .body(BodyInserters.fromObject(personDto))
+                .body(BodyInserters.fromObject(personEntity))
                 .exchange()
                 .expectStatus()
                 .isOk();
@@ -81,14 +81,14 @@ class PersonControllerTest {
     @Test
     void updatePerson(){
         int testPersonId = 14;
-        PersonDto personDto = new PersonDto(testPersonId, "Alice", 20);
-        Mono<PersonDto> testMonoResponse = Mono.just(personDto);
-        when(personService.updatePerson(anyInt(), any())).thenReturn(testMonoResponse);
-        assertNotNull(personService.updatePerson(testPersonId, testMonoResponse));
+        PersonEntity personEntity = new PersonEntity(testPersonId, "Alice", 20);
+        Mono<PersonEntity> testMonoResponse = Mono.just(personEntity);
+        when(personService.updatePerson(any(PersonEntity.class))).thenReturn(testMonoResponse);
+        assertNotNull(personService.updatePerson(personEntity));
 
         webTestClient.put()
-                .uri("/persons/14")
-                .body(BodyInserters.fromObject(personDto))
+                .uri("/persons/person")
+                .body(BodyInserters.fromObject(personEntity))
                 .exchange()
                 .expectStatus()
                 .isOk();

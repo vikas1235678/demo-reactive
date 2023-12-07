@@ -2,6 +2,7 @@ package com.example.demoreactive;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
 /**
@@ -18,11 +19,11 @@ import org.springframework.boot.test.context.SpringBootTest;
  */
 @SpringBootTest
 class DemoReactiveApplicationTests {
-
+	String[] sa = new String[]{"Hello"};
 	@Test
 	void contextLoads() {
+		DemoReactiveApplication.main(sa);
 		Assertions.assertTrue(true);
-		Assertions.assertFalse(false);
 	}
 
 }

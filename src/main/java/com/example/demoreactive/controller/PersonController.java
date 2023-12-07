@@ -1,6 +1,6 @@
 package com.example.demoreactive.controller;
 
-import com.example.demoreactive.dto.PersonDto;
+import com.example.demoreactive.entity.PersonEntity;
 import com.example.demoreactive.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -23,7 +23,7 @@ public class PersonController {
      * @return all person
      */
     @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Flux<PersonDto> all(){
+    public Flux<PersonEntity> all(){
         return personService.all();
     }
 
@@ -33,7 +33,7 @@ public class PersonController {
      * @return person with provided id
      */
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<ResponseEntity<PersonDto>> personById(@PathVariable int id){
+    public Mono<ResponseEntity<PersonEntity>> personById(@PathVariable int id){
         return this.personService.getPersonById(id)
                 .map(ResponseEntity::ok)
                 .defaultIfEmpty(ResponseEntity.notFound().build());
@@ -41,23 +41,22 @@ public class PersonController {
 
     /**
      * creates a person in database
-     * @param personDtoMono  person name
+     * @param personEntity  person object
      * @return newly created person if success else return bad request HTTP error
      */
     @PostMapping(value = "/person", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<PersonDto> createPerson(@RequestBody Mono<PersonDto> personDtoMono){
-        return this.personService.createPerson(personDtoMono);
+    public Mono<PersonEntity> createPerson(@RequestBody PersonEntity personEntity){
+        return this.personService.createPerson(personEntity);
     }
 
     /**
      * update particular person
-     * @param id person id
-     * @param personDtoMono updated detail of person
+     * @param personEntity updated detail of person
      * @return updated person
      */
-    @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<ResponseEntity<PersonDto>> updatePerson(@PathVariable int id, @RequestBody Mono<PersonDto> personDtoMono){
-        return this.personService.updatePerson(id, personDtoMono)
+    @PutMapping(value = "/person", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public Mono<ResponseEntity<PersonEntity>> updatePerson(@RequestBody PersonEntity personEntity){
+        return this.personService.updatePerson(personEntity)
                 .map(ResponseEntity::ok)
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }

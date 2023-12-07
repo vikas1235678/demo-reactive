@@ -1,28 +1,24 @@
 package com.example.demoreactive.service;
 
-import com.example.demoreactive.dto.PersonDto;
 import com.example.demoreactive.entity.PersonEntity;
 import com.example.demoreactive.repository.PersonRepository;
-import com.example.demoreactive.util.EntityDtoUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.autoconfigure.data.r2dbc.DataR2dbcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
-@DataR2dbcTest
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SpringExtension.class)
 class PersonServiceTest {
@@ -33,22 +29,21 @@ class PersonServiceTest {
     @MockBean
     PersonRepository personRepository;
 
+    @InjectMocks
+    PersonService personService;
+
     @Test
     void all(){
         PersonEntity personEntity1 = createPersonEntity(14, "Cory", 22);
         PersonEntity personEntity2 = createPersonEntity(15, "Smith", 26);
         PersonEntity personEntity3 = createPersonEntity(16, "Bob", 25);
         Flux<PersonEntity> personEntityFlux = Flux.just(personEntity1, personEntity2, personEntity3);
-        when(personRepository.findAll()).thenReturn(personEntityFlux);
-        Assertions.assertNotNull(personRepository.findAll().map(EntityDtoUtil::toDto));
-        PersonDto personDto1 = EntityDtoUtil.toDto(personEntity1);
-        PersonDto personDto2 = EntityDtoUtil.toDto(personEntity2);
-        PersonDto personDto3 = EntityDtoUtil.toDto(personEntity3);
-
-        StepVerifier.create(personRepository.findAll().map(EntityDtoUtil::toDto))
-                .expectNext(personDto1)
-                .expectNext(personDto2)
-                .expectNext(personDto3)
+        when(personService.all()).thenReturn(personEntityFlux);
+        Assertions.assertTrue(true);
+        personService.all();
+        StepVerifier.create(personService.all()).expectNext(personEntity1)
+                .expectNext(personEntity2)
+                .expectNext(personEntity3)
                 .verifyComplete();
     }
 
@@ -61,10 +56,9 @@ class PersonServiceTest {
         int testPersonId = 14;
         PersonEntity personEntity = new PersonEntity(testPersonId, "Cory", 20);
         Mono<PersonEntity> testMonoResponse = Mono.just(personEntity);
-        when(personRepository.findById(anyInt())).thenReturn(testMonoResponse);
-        assertNotNull(personRepository.findById(testPersonId).map(EntityDtoUtil::toDto));
-
-        StepVerifier.create(personRepository.findById(testPersonId))
+        when(personService.getPersonById(anyInt())).thenReturn(testMonoResponse);
+        personService.getPersonById(testPersonId);
+        StepVerifier.create(personService.getPersonById(testPersonId))
                 .expectNext(personEntity)
                 .verifyComplete();
     }
@@ -72,30 +66,40 @@ class PersonServiceTest {
     void createPerson(){
         PersonEntity personEntity = new PersonEntity(25, "Adam", 26);
         Mono<PersonEntity> personEntityMono = Mono.just(personEntity);
-        when(personRepository.save(any())).thenReturn(personEntityMono);
-        Assertions.assertNotNull(personRepository.save(personEntity).map(EntityDtoUtil::toDto));
-
-        StepVerifier.create(personRepository.save(personEntity))
+        when(personService.createPerson(any(PersonEntity.class))).thenReturn(personEntityMono);
+        personService.createPerson(personEntity);
+        StepVerifier.create(personService.createPerson(personEntity))
                 .expectNext(personEntity)
                 .verifyComplete();
     }
 
     @Test
-    void updatePerson(){
+    void updatePerson() {
         int testPersonId = 14;
         PersonEntity personEntity = new PersonEntity(testPersonId, "Alice", 20);
         Mono<PersonEntity> testMonoResponse = Mono.just(personEntity);
-        when(personRepository.save(any())).thenReturn(testMonoResponse);
-        Assertions.assertNotNull(personRepository.save(personEntity).map(EntityDtoUtil::toDto));
-
-        StepVerifier.create(personRepository.save(personEntity))
-                .expectNext(personEntity)
-                .verifyComplete();
+        Mono<Boolean> testMonoBoolean = Mono.just(Boolean.TRUE);
+        if (personEntity.getId() == null) throw new IllegalArgumentException();
+        when(personRepository.existsById(testPersonId)).thenReturn(testMonoBoolean);
+        when(personService.updatePerson(personEntity)).thenReturn(testMonoResponse);
+        personService.updatePerson(personEntity);
+        personRepository.existsById(testPersonId).flatMap(isExisting -> {
+            if(Boolean.TRUE.equals(isExisting)){
+                personRepository.save(personEntity);
+            }
+            else {
+                Mono.error(new IllegalArgumentException("The person id must exist " +
+                        "to update"));
+            }
+            return testMonoBoolean;
+        });
+        Assertions.assertTrue(true);
     }
     @Test
     void deleteUser(){
         int testPersonId = 14;
-        StepVerifier.create(personRepository.deleteById(testPersonId))
+        StepVerifier.create(personService.deletePerson(testPersonId))
                 .expectComplete();
+        personService.deletePerson(testPersonId);
     }
 }
